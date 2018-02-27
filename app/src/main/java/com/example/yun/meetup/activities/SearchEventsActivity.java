@@ -1,6 +1,7 @@
 package com.example.yun.meetup.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SearchView;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yun.meetup.R;
@@ -27,10 +32,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchEventsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -41,10 +48,10 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
 
     private LatLng currentLocation;
 
+    SearchView searchView;
+
     private double latitude;
     private double longitude;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
         setContentView(R.layout.activity_search_events);
 
         constraintLayoutMapLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutMapLoading);
+        searchView =  findViewById(R.id.search_view);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -64,8 +72,6 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
 
         currentLocation = new LatLng(latitude, longitude);
 //        currentLocation = new LatLng(43.684201, -79.318706);
-
-
 
     }
 
@@ -96,12 +102,25 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
             }
         });
 
+//        Padding needed to display the controls
+        mMap.setPadding(0, 200, 0,0);
+
         SearchEventsRequest searchEventsRequest = new SearchEventsRequest();
         searchEventsRequest.setLatitude(currentLocation.latitude);
         searchEventsRequest.setLongitude(currentLocation.longitude);
 
-        new SearchEventsTask().execute(searchEventsRequest);
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setMyLocationButtonEnabled(true);
+//        Checking authorization to get my location
+        if (ActivityCompat.checkSelfPermission(SearchEventsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SearchEventsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(SearchEventsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }else{
+            mMap.setMyLocationEnabled(true);
+        }
 
+        new SearchEventsTask().execute(searchEventsRequest);
 
     }
 
@@ -117,6 +136,34 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
 
     public void hideViews(){
         constraintLayoutMapLoading.setVisibility(View.GONE);
+    }
+
+    public void openDialog(View view) {
+        Dialog dialog = new Dialog(SearchEventsActivity.this);
+        dialog.setContentView(R.layout.dialog_filter);
+        dialog.setTitle("Hello");
+        Spinner spinner = dialog.findViewById(R.id.spinner_category);
+        SeekBar seekBar = dialog.findViewById(R.id.seek_bar_distance);
+        final TextView textViewProgress = dialog.findViewById(R.id.text_distance);
+        dialog.show();
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textViewProgress.setText(progress + "Km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
     }
 
     private class SearchEventsTask extends AsyncTask<SearchEventsRequest, Void, APIResult>{
@@ -136,12 +183,37 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
                 Toast.makeText(SearchEventsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
             }
             else{
-                List<Event> events = (List<Event>) apiResult.getResultEntity();
+                final List<Event> events = (List<Event>) apiResult.getResultEntity();
 
                 for(Event event : events){
                     LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
                 }
+
+//                SearchView Listener
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if(!query.isEmpty()){
+                            mMap.clear();
+                            final List<Event> filteredEvents = new ArrayList<>();
+                            for(Event  event: events){
+                                if(event.getTitle().contains(query)){
+                                    LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
+                                    mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
+                                    filteredEvents.add(event);
+                                }
+                            }
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
             }
         }
     }
