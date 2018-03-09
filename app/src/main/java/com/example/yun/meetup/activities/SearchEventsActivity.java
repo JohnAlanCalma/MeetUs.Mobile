@@ -16,6 +16,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.SeekBar;
@@ -40,7 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchEventsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class SearchEventsActivity extends AppCompatActivity  implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -57,6 +59,11 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_events);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_search_event);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         constraintLayoutMapLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutMapLoading);
         searchView =  findViewById(R.id.search_view);
@@ -103,7 +110,7 @@ public class SearchEventsActivity extends FragmentActivity implements OnMapReady
         });
 
 //        Padding needed to display the controls
-        mMap.setPadding(0, 200, 0,0);
+        mMap.setPadding(0, 400, 0,0);
 
         SearchEventsRequest searchEventsRequest = new SearchEventsRequest();
         searchEventsRequest.setLatitude(currentLocation.latitude);

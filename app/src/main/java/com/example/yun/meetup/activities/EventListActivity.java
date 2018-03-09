@@ -40,9 +40,9 @@ public class EventListActivity extends AppCompatActivity {
         listViewEvents = (ListView) findViewById(R.id.listViewEvents);
         constraintLayoutEventListLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutEventListLoading);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_event_list);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Event List");
+        toolbar.setTitle("My Hosted Events");
 
         /*Button that calls the Create an Event Activity*/
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

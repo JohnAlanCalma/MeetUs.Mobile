@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yun.meetup.R;
+import com.example.yun.meetup.adapters.MemberListViewAdapter;
 import com.example.yun.meetup.managers.NetworkManager;
 import com.example.yun.meetup.models.APIResult;
 import com.example.yun.meetup.models.Event;
@@ -31,7 +32,7 @@ import java.util.List;
 public class EventDetailsActivity extends AppCompatActivity {
 
     static final int UPDATE_EVENT_REQUEST = 1;  // The request code
-    ArrayAdapter<String> listviewAdapter;
+    MemberListViewAdapter listviewMembersAdapter;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fabParticipate;
@@ -93,6 +94,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         constraintLayoutDetailsLoading.setVisibility(View.GONE);
     }
 
+    // TODO: Implement the unsubscribe.
     public void handleOnClickParticipate(View view) {
 
         constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
@@ -101,6 +103,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         participateToEventRequest.setEvent_id(eventId);
         participateToEventRequest.setUser_id(userId);
         new ParticipateToEventTask().execute(participateToEventRequest);
+
+
     }
 
     public void handleOnClickUpdate(View view) {
@@ -163,12 +167,15 @@ public class EventDetailsActivity extends AppCompatActivity {
                     listSubscribedUsers.add(member.getName());
 
                     if (userId.equals(member.get_id())) {
-                        fabParticipate.setVisibility(View.GONE);
+                        fabParticipate.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_outline_pink_a400_24dp));
+                    }else{
+                        fabParticipate.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_add_grey_500_24dp));
                     }
                 }
 
-                listviewAdapter = new ArrayAdapter<String>(EventDetailsActivity.this, android.R.layout.simple_list_item_1, listSubscribedUsers);
-                listViewSubscribedUsers.setAdapter(listviewAdapter);
+                // Members list
+                listviewMembersAdapter = new MemberListViewAdapter(listSubscribedUsers, getApplicationContext());
+                listViewSubscribedUsers.setAdapter(listviewMembersAdapter);
             }
         }
     }

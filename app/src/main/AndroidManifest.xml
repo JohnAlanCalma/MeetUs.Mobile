@@ -76,7 +76,14 @@
         <activity
             android:name=".activities.SearchEventsActivity"
             android:label="@string/title_activity_search_events"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yun.meetup.activities.MainActivity"
+                />
+
+        </activity>
+
         <activity
             android:name=".activities.EventUpdateActivity"
             android:parentActivityName=".activities.EventDetailsActivity"

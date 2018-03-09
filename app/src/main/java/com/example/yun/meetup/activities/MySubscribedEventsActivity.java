@@ -40,8 +40,11 @@ public class MySubscribedEventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_subscribed_events);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_my_subscribed_event);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("My Subscribed Events");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         constraintLayoutSubscribedEventsLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutSubscribedEventstLoading);
 
@@ -100,9 +103,7 @@ public class MySubscribedEventsActivity extends AppCompatActivity {
                 EventListViewAdapter adapter = new EventListViewAdapter(listEvents, getApplicationContext());
 
                 listViewEvents.setAdapter(adapter);
-
             }
-            
         }
     }
 

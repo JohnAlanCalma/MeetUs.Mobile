@@ -5,11 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.yun.meetup.R;
-import com.example.yun.meetup.models.Event;
-import com.example.yun.meetup.models.UserInfo;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -20,36 +19,41 @@ import java.util.List;
 
 public class MemberListViewAdapter extends BaseAdapter {
 
-    private final List<UserInfo> mUsers;
+    private final List<String> mUserNames;
     private Context mContext;
 
     public class MembersListViewHolder {
 
-        final TextView memberName;
+        final TextView txtMemberName;
+        final ImageButton btnSendMessage;
+        final ImageButton btnRemoveMember;
 
         public MembersListViewHolder(View view) {
-            memberName = (TextView) view.findViewById(R.id.txt_item_member_name);
+            txtMemberName = view.findViewById(R.id.txt_item_member_name);
+            btnSendMessage = view.findViewById(R.id.btn_send_message_member_list);
+            btnRemoveMember = view.findViewById(R.id.btn_remove_member_list);
+
         }
     }
 
-    public MemberListViewAdapter(List<UserInfo> users, Context context) {
-        this.mUsers = users;
+    public MemberListViewAdapter(List<String> users, Context context) {
+        this.mUserNames = users;
         this.mContext = context;
     }
 
     @Override
     public int getCount() {
-        return mUsers.size();
+        return mUserNames.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mUsers.get(position);
+        return mUserNames.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return new BigInteger(mUsers.get(position).get_id(), 16).longValue();
+        return new BigInteger(mUserNames.get(position), 16).longValue();
     }
 
     @Override
@@ -66,9 +70,10 @@ public class MemberListViewAdapter extends BaseAdapter {
             holder = (MembersListViewHolder) view.getTag();
         }
 
-        UserInfo userInfo = mUsers.get(position);
 
-        holder.memberName.setText(userInfo.getName());
+        holder.txtMemberName.setText(mUserNames.get(position));
+
+        //TODO: Buttons event listeners.
 
         return view;
     }
