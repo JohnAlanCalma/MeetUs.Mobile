@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 public class ApiProvider {
 
-    private static final String BASE_URL = "https://meetus01.herokuapp.com/api";
+    private static final String BASE_URL = "https://meet-us-server1.herokuapp.com/api";
 
     public String sendRequest(String absoluteURL, String method, String body) throws  IOException {
 
