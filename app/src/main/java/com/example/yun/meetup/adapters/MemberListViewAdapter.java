@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.yun.meetup.R;
+import com.example.yun.meetup.interfaces.RemoveMemberCallback;
+import com.example.yun.meetup.models.UserInfo;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -18,9 +20,11 @@ import java.util.List;
  */
 
 public class MemberListViewAdapter extends BaseAdapter {
-    
-    private final List<String> mUserNames;
+
+    private final List<UserInfo> mUsers;
     private Context mContext;
+    private Boolean mIsHost;
+    private RemoveMemberCallback mRemoveMemberCallback;
 
     public class MembersListViewHolder {
 
@@ -34,28 +38,30 @@ public class MemberListViewAdapter extends BaseAdapter {
         }
     }
 
-    public MemberListViewAdapter(List<String> users, Context context) {
-        this.mUserNames = users;
+    public MemberListViewAdapter(Boolean isHost, List<UserInfo> users, Context context, RemoveMemberCallback removeMemberCallback) {
+        this.mUsers = users;
         this.mContext = context;
+        this.mIsHost = isHost;
+        this.mRemoveMemberCallback = removeMemberCallback;
     }
 
     @Override
     public int getCount() {
-        return mUserNames.size();
+        return mUsers.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mUserNames.get(position);
+        return mUsers.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return new BigInteger(mUserNames.get(position), 16).longValue();
+        return new BigInteger(mUsers.get(position).getName(), 16).longValue();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
         MembersListViewHolder holder;
 
@@ -69,9 +75,19 @@ public class MemberListViewAdapter extends BaseAdapter {
         }
 
 
-        holder.txtMemberName.setText(mUserNames.get(position));
+        holder.txtMemberName.setText(mUsers.get(position).getName());
 
-        //TODO: Buttons event listeners.
+        if (!mIsHost){
+            holder.btnRemoveMember.setVisibility(View.GONE);
+        }
+        else{
+            holder.btnRemoveMember.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mRemoveMemberCallback.onRemoveMemberClicked(mUsers.get(position));
+                }
+            });
+        }
 
         return view;
     }
