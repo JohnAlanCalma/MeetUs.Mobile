@@ -29,6 +29,7 @@ public class MySubscribedEventsActivity extends AppCompatActivity {
 
     private double latitude;
     private double longitude;
+    private String userId;
 
     private ConstraintLayout constraintLayoutSubscribedEventsLoading;
     private ListView listViewEvents;
@@ -74,11 +75,19 @@ public class MySubscribedEventsActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
-        String userID = sharedPref.getString("id", "");
+        userId = sharedPref.getString("id", "");
 
-        if (!userID.isEmpty()){
+        if (!userId.isEmpty()){
             new MySubscribedEventsTask().execute(sharedPref.getString("id", ""));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if (!userId.isEmpty()){
+            new MySubscribedEventsTask().execute(userId);
+        }
+        super.onResume();
     }
 
     private class MySubscribedEventsTask extends AsyncTask<String, Void, APIResult>{
@@ -95,15 +104,15 @@ public class MySubscribedEventsActivity extends AppCompatActivity {
             hideViews();
 
             if (!apiResult.isResultSuccess()){
-                Toast.makeText(MySubscribedEventsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
+               listEvents = new ArrayList<>();
             }
             else{
                 listEvents = (List<Event>) apiResult.getResultEntity();
-
-                EventListViewAdapter adapter = new EventListViewAdapter(listEvents, getApplicationContext());
-
-                listViewEvents.setAdapter(adapter);
             }
+
+            EventListViewAdapter adapter = new EventListViewAdapter(listEvents, getApplicationContext());
+
+            listViewEvents.setAdapter(adapter);
         }
     }
 
