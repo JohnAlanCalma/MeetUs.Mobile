@@ -18,19 +18,17 @@ import java.util.List;
  */
 
 public class MemberListViewAdapter extends BaseAdapter {
-
+    
     private final List<String> mUserNames;
     private Context mContext;
 
     public class MembersListViewHolder {
 
         final TextView txtMemberName;
-        final ImageButton btnSendMessage;
         final ImageButton btnRemoveMember;
 
         public MembersListViewHolder(View view) {
             txtMemberName = view.findViewById(R.id.txt_item_member_name);
-            btnSendMessage = view.findViewById(R.id.btn_send_message_member_list);
             btnRemoveMember = view.findViewById(R.id.btn_remove_member_list);
 
         }
