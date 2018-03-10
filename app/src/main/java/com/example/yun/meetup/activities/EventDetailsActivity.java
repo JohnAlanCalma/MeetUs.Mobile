@@ -24,6 +24,7 @@ import com.example.yun.meetup.models.APIResult;
 import com.example.yun.meetup.models.Event;
 import com.example.yun.meetup.models.UserInfo;
 import com.example.yun.meetup.requests.ParticipateToEventRequest;
+import com.example.yun.meetup.requests.UnsubscribeRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String userId;
     private String eventId;
     private Event event;
+    private FloatingActionButton fabUnsubscribe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         fabParticipate = findViewById(R.id.fab_event_detail_participate);
+        fabUnsubscribe = (FloatingActionButton) findViewById(R.id.fab_event_detail_unsubscribe);
         fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_event_details);
         fabDelete = (FloatingActionButton) findViewById(R.id.fab_delete_event_details);
 
@@ -127,6 +130,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         new DeleteEventTask().execute(eventId);
     }
 
+    public void handleOnClickUnsubscribe(View view) {
+        constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+
+        UnsubscribeRequest unsubscribeRequest = new UnsubscribeRequest();
+        unsubscribeRequest.setEvent_id(eventId);
+        unsubscribeRequest.setUser_id(userId);
+        new UnsubscribeTask().execute(unsubscribeRequest);
+    }
+
     private class GetEventTask extends AsyncTask<String, Void, APIResult> {
 
         @Override
@@ -153,24 +165,34 @@ public class EventDetailsActivity extends AppCompatActivity {
                 textViewDetailSubtitle.setText(event.getSubtitle());
                 textViewDetailDescription.setText(event.getDescription());
 
-                if (userId.equals(event.getHost_id())) {
-                    fabParticipate.setVisibility(View.GONE);
-                } else {
-                    fabEdit.setVisibility(View.GONE);
-                    fabDelete.setVisibility(View.GONE);
-                }
-
                 List<String> listSubscribedUsers = new ArrayList<>();
+
+                boolean isMember = false;
 
                 for (UserInfo member : event.getMembers()) {
 
                     listSubscribedUsers.add(member.getName());
 
                     if (userId.equals(member.get_id())) {
-                        fabParticipate.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_outline_pink_a400_24dp));
-                    }else{
-                        fabParticipate.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_add_grey_500_24dp));
+                        isMember = true;
+                        break;
                     }
+                }
+
+                if (isMember){
+                    fabParticipate.setVisibility(View.GONE);
+                    fabUnsubscribe.setVisibility(View.VISIBLE);
+                }
+                else{
+                    fabParticipate.setVisibility(View.VISIBLE);
+                    fabUnsubscribe.setVisibility(View.GONE);
+                }
+
+                if (userId.equals(event.getHost_id())) {
+                    fabParticipate.setVisibility(View.GONE);
+                } else {
+                    fabEdit.setVisibility(View.GONE);
+                    fabDelete.setVisibility(View.GONE);
                 }
 
                 // Members list
@@ -218,6 +240,25 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 Toast.makeText(EventDetailsActivity.this, "Event deleted successfully!", Toast.LENGTH_LONG).show();
                 finish();
+            }
+        }
+    }
+
+    private class UnsubscribeTask extends AsyncTask<UnsubscribeRequest, Void, APIResult>{
+
+        @Override
+        protected APIResult doInBackground(UnsubscribeRequest... unsubscribeRequests) {
+            NetworkManager networkManager = new NetworkManager();
+            return networkManager.unsubscribeFromEvent(unsubscribeRequests[0]);
+        }
+
+        @Override
+        protected void onPostExecute(APIResult apiResult) {
+            if (!apiResult.isResultSuccess()) {
+                hideViews();
+                Toast.makeText(EventDetailsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
+            } else {
+                new GetEventTask().execute(eventId);
             }
         }
     }
