@@ -12,6 +12,7 @@ import com.example.yun.meetup.requests.LoginRequest;
 import com.example.yun.meetup.requests.ParticipateToEventRequest;
 import com.example.yun.meetup.requests.RegistrationRequest;
 import com.example.yun.meetup.requests.SearchEventsRequest;
+import com.example.yun.meetup.requests.UnsubscribeRequest;
 import com.example.yun.meetup.requests.UpdateEventRequest;
 import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
@@ -501,6 +502,31 @@ public class NetworkManager {
             }
         }
         catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
+    public APIResult unsubscribeFromEvent(UnsubscribeRequest unsubscribeRequest){
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String json = gson .toJson(unsubscribeRequest);
+
+        APIResult apiResult = new APIResult(false, "Error unsubscribing from the event: please try again", null);
+
+        try{
+            String response = apiProvider.sendRequest("/event/unsubscribe", "POST", json);
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            if (!jsonObject.isNull("data")){
+                Event event = gson.fromJson(jsonObject.getJSONObject("data").toString(), Event.class);
+
+                apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, event);
+            }
+        }
+        catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
