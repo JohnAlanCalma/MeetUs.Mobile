@@ -55,6 +55,12 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
     private double latitude;
     private double longitude;
 
+    private int selectedDistance = 50;
+    private String selectedCategory = "";
+
+    private List<Event> mEvents;
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +152,7 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
     }
 
     public void openDialog(View view) {
-        Dialog dialog = new Dialog(SearchEventsActivity.this);
+        dialog = new Dialog(SearchEventsActivity.this);
         dialog.setContentView(R.layout.dialog_filter);
         dialog.setTitle("Hello");
         Spinner spinner = dialog.findViewById(R.id.spinner_category);
@@ -158,6 +164,7 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textViewProgress.setText(progress + "Km");
+                selectedDistance = progress;
             }
 
             @Override
@@ -171,6 +178,32 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
             }
         });
 
+    }
+
+    public void handleOnClickApplyFilters(View view) {
+        mMap.clear();
+        final List<Event> filteredEvents = new ArrayList<>();
+        for(Event  event: mEvents){
+            float[] results = new float[1];
+            Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, event.getLatitude(), event.getLongitude(), results);
+            float distanceInMeters = results[0];
+
+            if (distanceInMeters < (selectedDistance * 1000)){
+
+                if (selectedCategory == ""){
+                    LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
+                    filteredEvents.add(event);
+                }
+                else if (event.getCategory().equals(selectedCategory)){
+                    LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
+                    filteredEvents.add(event);
+                }
+            }
+        }
+
+        dialog.dismiss();
     }
 
     private class SearchEventsTask extends AsyncTask<SearchEventsRequest, Void, APIResult>{
@@ -190,9 +223,9 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
                 Toast.makeText(SearchEventsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
             }
             else{
-                final List<Event> events = (List<Event>) apiResult.getResultEntity();
+                mEvents = (List<Event>) apiResult.getResultEntity();
 
-                for(Event event : events){
+                for(Event event : mEvents){
                     LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
                 }
@@ -205,8 +238,8 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
                         if(!query.isEmpty()){
                             mMap.clear();
                             final List<Event> filteredEvents = new ArrayList<>();
-                            for(Event  event: events){
-                                if(event.getTitle().contains(query)){
+                            for(Event  event: mEvents){
+                                if(event.getTitle().contains(query) || event.getSubtitle().contains(query) || event.getDescription().contains(query)){
                                     LatLng location = new LatLng(event.getLatitude(), event.getLongitude());
                                     mMap.addMarker(new MarkerOptions().position(location).title(event.getTitle()).snippet(event.get_id()));
                                     filteredEvents.add(event);

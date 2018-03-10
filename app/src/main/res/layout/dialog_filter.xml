@@ -74,6 +74,7 @@
         android:layout_height="wrap_content"
         android:text="Apply"
         android:layout_margin="12dp"
+        android:onClick="handleOnClickApplyFilters"
         style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
 </LinearLayout>
