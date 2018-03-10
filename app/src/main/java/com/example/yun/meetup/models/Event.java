@@ -22,6 +22,7 @@ public class Event implements Serializable {
     private float longitude = 0;
     private String address = "";
     private String date = "";
+    private transient String category = "";
 
     @SerializedName("members")
     private List<String> memberIds = new ArrayList<>();
@@ -122,5 +123,13 @@ public class Event implements Serializable {
 
     public void setMembers(List<UserInfo> members) {
         this.members = members;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
