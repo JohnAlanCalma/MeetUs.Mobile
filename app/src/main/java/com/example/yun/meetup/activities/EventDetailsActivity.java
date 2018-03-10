@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.yun.meetup.R;
 import com.example.yun.meetup.adapters.MemberListViewAdapter;
+import com.example.yun.meetup.interfaces.RemoveMemberCallback;
 import com.example.yun.meetup.managers.NetworkManager;
 import com.example.yun.meetup.models.APIResult;
 import com.example.yun.meetup.models.Event;
@@ -165,13 +166,13 @@ public class EventDetailsActivity extends AppCompatActivity {
                 textViewDetailSubtitle.setText(event.getSubtitle());
                 textViewDetailDescription.setText(event.getDescription());
 
-                List<String> listSubscribedUsers = new ArrayList<>();
+                List<UserInfo> listSubscribedUsers = new ArrayList<>();
 
                 boolean isMember = false;
 
                 for (UserInfo member : event.getMembers()) {
 
-                    listSubscribedUsers.add(member.getName());
+                    listSubscribedUsers.add(member);
 
                     if (userId.equals(member.get_id())) {
                         isMember = true;
@@ -188,16 +189,20 @@ public class EventDetailsActivity extends AppCompatActivity {
                     fabUnsubscribe.setVisibility(View.GONE);
                 }
 
-                if (userId.equals(event.getHost_id())) {
+                // Members list
+
+                Boolean isHost = userId.equals(event.getHost_id());
+
+                if (isHost) {
                     fabParticipate.setVisibility(View.GONE);
                 } else {
                     fabEdit.setVisibility(View.GONE);
                     fabDelete.setVisibility(View.GONE);
                 }
 
-                // Members list
-                listviewMembersAdapter = new MemberListViewAdapter(listSubscribedUsers, getApplicationContext());
+                listviewMembersAdapter = new MemberListViewAdapter(isHost, listSubscribedUsers, getApplicationContext(), new MyRemoveMemberCallback());
                 listViewSubscribedUsers.setAdapter(listviewMembersAdapter);
+
             }
         }
     }
@@ -260,6 +265,17 @@ public class EventDetailsActivity extends AppCompatActivity {
             } else {
                 new GetEventTask().execute(eventId);
             }
+        }
+    }
+
+    private class MyRemoveMemberCallback implements RemoveMemberCallback{
+
+        @Override
+        public void onRemoveMemberClicked(UserInfo userInfo) {
+            UnsubscribeRequest unsubscribeRequest = new UnsubscribeRequest();
+            unsubscribeRequest.setEvent_id(eventId);
+            unsubscribeRequest.setUser_id(userInfo.get_id());
+            new UnsubscribeTask().execute(unsubscribeRequest);
         }
     }
 }
