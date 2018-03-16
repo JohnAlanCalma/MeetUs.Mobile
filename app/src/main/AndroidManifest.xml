@@ -3,7 +3,7 @@
     package="com.example.yun.meetup">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -20,23 +20,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.LoginActivity"
+        <activity
+            android:name=".activities.LoginActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".activities.RegistrationActivity" android:screenOrientation="portrait" />
-        <activity android:name=".activities.MainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".activities.CreateEventActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RegistrationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CreateEventActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.EventListActivity"
             android:label="Event list"
             android:parentActivityName=".activities.MainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.MainActivity" />
@@ -45,8 +48,8 @@
             android:name=".activities.EventDetailsActivity"
             android:label="EventDetailsActivity"
             android:parentActivityName=".activities.SearchEventsActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.MainActivity" />
@@ -55,8 +58,8 @@
             android:name=".activities.MySubscribedEventsActivity"
             android:label="@string/title_activity_my_subscribed_events"
             android:parentActivityName=".activities.MainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.MainActivity" />
@@ -79,16 +82,13 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.yun.meetup.activities.MainActivity"
-                />
-
+                android:value="com.example.yun.meetup.activities.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.EventUpdateActivity"
             android:parentActivityName=".activities.EventDetailsActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.EventDetailsActivity" />
@@ -96,8 +96,8 @@
         <activity
             android:name=".activities.AdminEventListActivity"
             android:parentActivityName=".activities.AdminMainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.AdminMainActivity" />
@@ -105,8 +105,8 @@
         <activity
             android:name=".activities.AdminUpdateEventActivity"
             android:parentActivityName=".activities.AdminEventDetailsActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.AdminEventDetailsActivity" />
@@ -114,13 +114,27 @@
         <activity
             android:name=".activities.AdminEventDetailsActivity"
             android:parentActivityName=".activities.AdminEventListActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yun.meetup.activities.AdminEventListActivity" />
         </activity>
-        <activity android:name=".activities.AdminMainActivity"></activity>
+        <activity android:name=".activities.AdminMainActivity" />
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:label="@string/title_activity_user_profile"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yun.meetup.activities.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
