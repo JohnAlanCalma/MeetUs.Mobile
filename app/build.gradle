@@ -32,5 +32,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
     testCompile 'junit:junit:4.12'
     implementation 'com.google.android.gms:play-services-maps:11.6.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     compile 'de.hdodenhof:circleimageview:2.2.0'
 }
