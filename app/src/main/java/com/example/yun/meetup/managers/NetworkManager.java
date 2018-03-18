@@ -1,5 +1,6 @@
 package com.example.yun.meetup.managers;
 
+import android.graphics.Bitmap;
 import android.text.Html;
 
 import com.example.yun.meetup.models.APIResult;
@@ -14,6 +15,7 @@ import com.example.yun.meetup.requests.RegistrationRequest;
 import com.example.yun.meetup.requests.SearchEventsRequest;
 import com.example.yun.meetup.requests.UnsubscribeRequest;
 import com.example.yun.meetup.requests.UpdateEventRequest;
+import com.example.yun.meetup.requests.UpdateProfileRequest;
 import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -525,6 +528,45 @@ public class NetworkManager {
 
                 apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, event);
             }
+        }
+        catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
+    public APIResult uploadPhoto(File photo, String userId){
+
+        APIResult apiResult = new APIResult(false, "Error updating profile: please try again", null);
+
+        try {
+            String response = apiProvider.sendMultipartFormRequest("/user/photo?user_id=" + userId, photo);
+
+            apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, response);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
+    public APIResult updateProfile(UpdateProfileRequest updateProfileRequest){
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String json = gson .toJson(updateProfileRequest);
+
+        APIResult apiResult = new APIResult(false, "Error updating profile: please try again", null);
+
+        try{
+            String response = apiProvider.sendRequest("/user/profile", "POST", json);
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            UserInfo userInfo = gson.fromJson(jsonObject.toString(), UserInfo.class);
+
+            apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, userInfo);
         }
         catch (IOException | JSONException e) {
             e.printStackTrace();
