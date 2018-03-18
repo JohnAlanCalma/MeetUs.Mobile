@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else{
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, Main2Activity.class);
                 startActivity(intent);
             }
 
@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else{
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
                     startActivity(intent);
                 }
 
