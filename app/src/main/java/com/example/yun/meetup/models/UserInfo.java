@@ -13,6 +13,8 @@ public class UserInfo implements Serializable {
     private String password = "";
     private String name = "";
     private boolean isAdmin = false;
+    private String interests = "";
+    private String description = "";
 
     public String get_id() {
         return _id;
@@ -52,5 +54,21 @@ public class UserInfo implements Serializable {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
