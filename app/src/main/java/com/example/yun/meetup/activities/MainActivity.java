@@ -305,4 +305,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("longitude", "" + location.getLongitude());
         editor.commit();
     }
+
+    public void handleOnClickMyProfile(View view) {
+        Intent intent = new Intent(this, UserProfileActivity.class);
+        startActivity(intent);
+    }
 }
