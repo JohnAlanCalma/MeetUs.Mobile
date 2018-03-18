@@ -149,7 +149,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 editor.putString("name", result.getName());
                 editor.commit();
 
-                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                Intent intent = new Intent(RegistrationActivity.this, Main2Activity.class);
                 startActivity(intent);
             }
 
