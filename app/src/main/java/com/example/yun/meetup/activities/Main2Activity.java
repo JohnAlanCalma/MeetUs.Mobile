@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -36,6 +37,7 @@ import com.example.yun.meetup.R;
 import com.example.yun.meetup.managers.NetworkManager;
 import com.example.yun.meetup.models.APIResult;
 import com.example.yun.meetup.models.Event;
+import com.example.yun.meetup.models.UserInfo;
 import com.example.yun.meetup.requests.SearchEventsRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,8 +51,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class Main2Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -73,6 +76,8 @@ public class Main2Activity extends AppCompatActivity
     private Dialog dialog;
 
     FloatingActionButton fab;
+
+    private String userId;
 
 
     private static final long LOCATION_REFRESH_TIME = 1;
@@ -162,6 +167,7 @@ public class Main2Activity extends AppCompatActivity
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         latitude = Double.parseDouble(sharedPref.getString("latitude", "0"));
         longitude = Double.parseDouble(sharedPref.getString("longitude", "0"));
+        userId = sharedPref.getString("id", "");
 
         currentLocationLatLng = new LatLng(latitude, longitude);
 
@@ -329,8 +335,6 @@ public class Main2Activity extends AppCompatActivity
         @Override
         protected void onPostExecute(APIResult apiResult) {
 
-            hideViews();
-
             if (apiResult.getResultEntity() == null){
                 Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
             }
@@ -366,8 +370,57 @@ public class Main2Activity extends AppCompatActivity
                         return false;
                     }
                 });
+
+                new GetUserInfoTask().execute(userId);
             }
         }
+    }
+
+    private class GetUserInfoTask extends AsyncTask<String, Void, APIResult>{
+
+        @Override
+        protected APIResult doInBackground(String... strings) {
+            NetworkManager networkManager = new NetworkManager();
+            return networkManager.getUserById(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(APIResult apiResult) {
+            hideViews();
+
+            if (apiResult.getResultEntity() == null){
+                Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
+            }
+            else{
+                UserInfo userInfo = (UserInfo) apiResult.getResultEntity();
+
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                View headerview = navigationView.getHeaderView(0);
+
+                LinearLayout layoutDrawerHeader = (LinearLayout) headerview.findViewById(R.id.layout_drawer_header);
+                CircleImageView imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
+                TextView txtDrawerUsername = (TextView) headerview.findViewById(R.id.txt_drawer_user_name);
+                TextView txtDrawerUserEmail = (TextView) headerview.findViewById(R.id.txt_drawer_user_email);
+
+                txtDrawerUsername.setText(userInfo.getName());
+                txtDrawerUserEmail.setText(userInfo.getEmail());
+
+                layoutDrawerHeader.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Main2Activity.this, UserProfileActivity.class);
+                        startActivity(intent);
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+                });
+
+
+
+            }
+
+        }
+
     }
 
     @Override
@@ -401,10 +454,16 @@ public class Main2Activity extends AppCompatActivity
         if (id == R.id.nav_my_subscribed_events) {
             Intent intent = new Intent(this, MySubscribedEventsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_my_hosted_events) {
+        }
+        else if (id == R.id.nav_create_event) {
+            Intent intent = new Intent(this, CreateEventActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_my_hosted_events) {
             Intent intent = new Intent(this, EventListActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
@@ -412,6 +471,8 @@ public class Main2Activity extends AppCompatActivity
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

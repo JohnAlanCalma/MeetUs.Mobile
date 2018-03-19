@@ -60,10 +60,14 @@ public class LoginActivity extends AppCompatActivity {
             if (isAdmin){
                 Intent intent = new Intent(this, AdminMainActivity.class);
                 startActivity(intent);
+
+                finish();
             }
             else{
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, Main2Activity.class);
                 startActivity(intent);
+
+                finish();
             }
 
         }
@@ -103,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
     public void handleOnClickCreateAccount(View view) {
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);
+
+        finish();
     }
 
     public void hideViews(){
@@ -143,10 +149,14 @@ public class LoginActivity extends AppCompatActivity {
                 if (result.isAdmin()){
                     Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
                     startActivity(intent);
+
+                    finish();
                 }
                 else{
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
                     startActivity(intent);
+
+                    finish();
                 }
 
             }

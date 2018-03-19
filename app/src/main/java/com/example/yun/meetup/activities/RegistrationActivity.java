@@ -69,6 +69,8 @@ public class RegistrationActivity extends AppCompatActivity {
     public void handleOnClickSignin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+
+        finish();
     }
 
     public void handleOnClickRegister(View view) {
@@ -149,11 +151,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 editor.putString("name", result.getName());
                 editor.commit();
 
-                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                Intent intent = new Intent(RegistrationActivity.this, Main2Activity.class);
                 startActivity(intent);
+
+                finish();
             }
-
-
+            
         }
     }
 }
