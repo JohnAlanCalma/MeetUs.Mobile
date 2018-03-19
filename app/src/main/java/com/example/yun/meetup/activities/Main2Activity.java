@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -396,12 +397,21 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 View headerview = navigationView.getHeaderView(0);
 
+                LinearLayout layoutDrawerHeader = (LinearLayout) headerview.findViewById(R.id.layout_drawer_header);
                 CircleImageView imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
                 TextView txtDrawerUsername = (TextView) headerview.findViewById(R.id.txt_drawer_user_name);
                 TextView txtDrawerUserEmail = (TextView) headerview.findViewById(R.id.txt_drawer_user_email);
 
                 txtDrawerUsername.setText(userInfo.getName());
                 txtDrawerUserEmail.setText(userInfo.getEmail());
+
+                layoutDrawerHeader.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Main2Activity.this, UserProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
 
             }
 
