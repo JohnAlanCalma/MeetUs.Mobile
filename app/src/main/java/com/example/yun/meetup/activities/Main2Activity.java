@@ -410,8 +410,12 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                     public void onClick(View v) {
                         Intent intent = new Intent(Main2Activity.this, UserProfileActivity.class);
                         startActivity(intent);
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        drawer.closeDrawer(GravityCompat.START);
                     }
                 });
+
+
 
             }
 
