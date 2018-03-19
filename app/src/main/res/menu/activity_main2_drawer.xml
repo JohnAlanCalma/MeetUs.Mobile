@@ -5,9 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_search_events"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Search Events" />
+        <item
             android:id="@+id/nav_my_subscribed_events"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Subscribed Events" />
+            android:title="My Subscribed Events" />
+        <item
+            android:id="@+id/nav_create_event"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Create New Event" />
         <item
             android:id="@+id/nav_my_hosted_events"
             android:icon="@drawable/ic_menu_gallery"
