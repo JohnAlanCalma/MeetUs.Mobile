@@ -47,6 +47,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -414,6 +415,17 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                         drawer.closeDrawer(GravityCompat.START);
                     }
                 });
+
+                String photoURL = "https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId;
+
+                Picasso.get()
+                        .load(photoURL)
+                        .fit()
+                        .centerInside()
+                        .rotate(270)
+                        .placeholder(R.drawable.main_background)
+                        .error(R.drawable.main_background)
+                        .into(imgUserDrawer);
 
 
 
