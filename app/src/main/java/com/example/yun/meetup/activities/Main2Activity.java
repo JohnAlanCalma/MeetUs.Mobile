@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +19,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -49,6 +52,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -387,9 +391,10 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
         @Override
         protected void onPostExecute(APIResult apiResult) {
-            hideViews();
 
             if (apiResult.getResultEntity() == null){
+                hideViews();
+
                 Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
             }
             else{
@@ -416,22 +421,67 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                     }
                 });
 
-                String photoURL = "https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId;
-
-                Picasso.get()
-                        .load(photoURL)
-                        .fit()
-                        .centerInside()
-                        .rotate(270)
-                        .placeholder(R.drawable.main_background)
-                        .error(R.drawable.main_background)
-                        .into(imgUserDrawer);
-
-
-
+                new DownloadImageTask().execute("https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId);
             }
 
         }
+
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String urldisplay = strings[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View headerview = navigationView.getHeaderView(0);
+
+            CircleImageView imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
+            imgUserDrawer.setImageBitmap(bitmap);
+
+            hideViews();
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mMap != null){
+            constraintLayoutMapLoading.setVisibility(View.VISIBLE);
+
+            SearchEventsRequest searchEventsRequest = new SearchEventsRequest();
+            searchEventsRequest.setLatitude(currentLocationLatLng.latitude);
+            searchEventsRequest.setLongitude(currentLocationLatLng.longitude);
+
+            UiSettings uiSettings = mMap.getUiSettings();
+//        uiSettings.setZoomControlsEnabled(true);
+            uiSettings.setMyLocationButtonEnabled(true);
+//        Checking authorization to get my location
+            if (ActivityCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                return;
+            }else{
+                mMap.setMyLocationEnabled(true);
+            }
+
+            new SearchEventsTask().execute(searchEventsRequest);
+        }
+
 
     }
 

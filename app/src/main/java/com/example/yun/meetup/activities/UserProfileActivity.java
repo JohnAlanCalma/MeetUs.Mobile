@@ -76,8 +76,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         layoutLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutProfileLoading);
 
-        layoutLoading.setVisibility(View.GONE);
-
         txtUserDescription = findViewById(R.id.txt_user_description);
         txtUserInterests = findViewById(R.id.txt_user_interest);
         txtUserName = (TextView) findViewById(R.id.txt_user_name);
@@ -91,6 +89,7 @@ public class UserProfileActivity extends AppCompatActivity {
         userId = sharedPref.getString("id", "");
 
         if (!userId.isEmpty()){
+            showLoading(true);
             new GetUserProfileTask().execute(userId);
         }
 
@@ -172,6 +171,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 File finalFile = new File(getRealPathFromURI(tempUri));
 
+                showLoading(true);
+
                 new UploadPhotoTask().execute(finalFile);
             }
         }
@@ -183,18 +184,20 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-    private Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
     private String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
+    }
+
+    private void showLoading(boolean show){
+        if (show){
+            layoutLoading.setVisibility(View.VISIBLE);
+        }
+        else{
+            layoutLoading.setVisibility(View.GONE);
+        }
     }
 
     public void handleOnClickUpdateProfile(View view) {
@@ -220,6 +223,8 @@ public class UserProfileActivity extends AppCompatActivity {
         protected void onPostExecute(APIResult apiResult) {
 
             if (!apiResult.isResultSuccess()){
+                showLoading(false);
+
                 Toast.makeText(UserProfileActivity.this, apiResult.getResultMessage(), Toast.LENGTH_SHORT).show();
             }
             else{
@@ -237,18 +242,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     mInterests = mUserInfo.getInterests();
                 }
 
-                String photoURL = "https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId;
-
-                Picasso.get()
-                        .load(photoURL)
-                        .fit()
-                        .centerInside()
-                        .rotate(270)
-                        .placeholder(R.drawable.main_background)
-                        .error(R.drawable.main_background)
-                        .into(circleImageViewProfile);
-
-                layoutLoading.setVisibility(View.GONE);
+                new DownloadImageTask().execute("https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId);
             }
         }
     }
@@ -264,23 +258,14 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(APIResult apiResult) {
 
-            layoutLoading.setVisibility(View.GONE);
-
             if (!apiResult.isResultSuccess()){
+                showLoading(false);
                 Toast.makeText(UserProfileActivity.this, apiResult.getResultMessage(), Toast.LENGTH_SHORT).show();
             }
             else{
 
-                String photoURL = "https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId;
+                new DownloadImageTask().execute("https://meet-us-server1.herokuapp.com/api/user/photo/?user_id=" + userId);
 
-                Picasso.get()
-                        .load(photoURL)
-                        .fit()
-                        .centerInside()
-                        .rotate(270)
-                        .placeholder(R.drawable.main_background)
-                        .error(R.drawable.main_background)
-                        .into(circleImageViewProfile);
             }
         }
     }
@@ -307,6 +292,29 @@ public class UserProfileActivity extends AppCompatActivity {
                 txtUserDescription.setText(userInfo.getDescription());
                 txtUserInterests.setText(userInfo.getInterests());
             }
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String urldisplay = strings[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            circleImageViewProfile.setImageBitmap(bitmap);
+            showLoading(false);
         }
     }
 }
