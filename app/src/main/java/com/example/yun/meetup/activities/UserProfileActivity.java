@@ -81,6 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
         txtUserName = (TextView) findViewById(R.id.txt_user_name);
 
         circleImageViewProfile = (CircleImageView) findViewById(R.id.profile_image);
+        circleImageViewProfile.setImageResource(R.drawable.main_background);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -101,6 +102,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        input.setText(mDescription);
+
         builder.setView(input);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -125,7 +129,11 @@ public class UserProfileActivity extends AppCompatActivity {
         builder.setTitle("Insert your interests");
 
         final EditText input = new EditText(this);
+
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        input.setText(mInterests);
+
         builder.setView(input);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
