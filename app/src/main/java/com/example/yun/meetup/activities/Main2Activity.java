@@ -89,6 +89,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
     private static final float LOCATION_REFRESH_DISTANCE = 1;
 
     private CircleImageView imgUserDrawer;
+    private NavigationView navigationView;
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -146,7 +147,10 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
         constraintLayoutMapLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutMapLoading);
         searchView =  findViewById(R.id.search_view);
 
-        imgUserDrawer = (CircleImageView) findViewById(R.id.img_user_drawer);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerview = navigationView.getHeaderView(0);
+
+        imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
         imgUserDrawer.setImageDrawable(getResources().getDrawable(R.drawable.main_background));
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_event_main_activity);
@@ -171,7 +175,6 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
@@ -405,7 +408,6 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
             else{
                 UserInfo userInfo = (UserInfo) apiResult.getResultEntity();
 
-                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 View headerview = navigationView.getHeaderView(0);
 
                 LinearLayout layoutDrawerHeader = (LinearLayout) headerview.findViewById(R.id.layout_drawer_header);
@@ -451,7 +453,6 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View headerview = navigationView.getHeaderView(0);
 
             imgUserDrawer.setImageBitmap(bitmap);
