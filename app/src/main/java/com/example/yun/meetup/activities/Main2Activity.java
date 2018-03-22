@@ -88,6 +88,8 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
     private static final long LOCATION_REFRESH_TIME = 1;
     private static final float LOCATION_REFRESH_DISTANCE = 1;
 
+    private CircleImageView imgUserDrawer;
+
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -143,6 +145,9 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
         constraintLayoutMapLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutMapLoading);
         searchView =  findViewById(R.id.search_view);
+
+        imgUserDrawer = (CircleImageView) findViewById(R.id.img_user_drawer);
+        imgUserDrawer.setImageDrawable(getResources().getDrawable(R.drawable.main_background));
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_event_main_activity);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -341,7 +346,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
         protected void onPostExecute(APIResult apiResult) {
 
             if (apiResult.getResultEntity() == null){
-                Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
+                Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
             }
             else{
                 mEvents = (List<Event>) apiResult.getResultEntity();
@@ -395,7 +400,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
             if (apiResult.getResultEntity() == null){
                 hideViews();
 
-                Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG);
+                Toast.makeText(Main2Activity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
             }
             else{
                 UserInfo userInfo = (UserInfo) apiResult.getResultEntity();
@@ -449,7 +454,6 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View headerview = navigationView.getHeaderView(0);
 
-            CircleImageView imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
             imgUserDrawer.setImageBitmap(bitmap);
 
             hideViews();
