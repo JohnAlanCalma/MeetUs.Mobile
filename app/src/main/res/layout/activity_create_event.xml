@@ -63,6 +63,34 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/background_edittext"
+                android:layout_marginTop="16dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="@android:color/white"
+                    />
+
+                <Spinner
+                    android:id="@+id/spinner_category_create_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:spinnerMode="dialog"
+                    android:popupTheme="@style/AlertDialog.AppCompat"
+                    android:entries="@array/category_array"/>
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/editTextCreateEventDate"
                 android:layout_width="match_parent"
@@ -147,6 +175,13 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_photo_camera_white_24dp"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayoutLoading"

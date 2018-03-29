@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -23,7 +25,10 @@ import com.example.yun.meetup.models.UserInfo;
 import com.example.yun.meetup.requests.CreateEventRequest;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -40,6 +45,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextView textViewErrorCreateEventDate;
     private TextView textViewErrorCreateEventAddress;
     private TextView textViewErrorCreateEvent;
+    private Spinner spinnerCategory;
 
 
     Calendar calendar = Calendar.getInstance();
@@ -71,6 +77,16 @@ public class CreateEventActivity extends AppCompatActivity {
         editTextCreateEventDescription = (EditText) findViewById(R.id.editTextCreateEventDescription);
 
         textViewErrorCreateEvent = (TextView) findViewById(R.id.textViewErrorCreateEvent);
+
+        spinnerCategory = findViewById(R.id.spinner_category_create_event);
+
+//        String[] categoryArray = getResources().getStringArray(R.array.category_array);
+//        List<String> categoryList = Arrays.asList(categoryArray);
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, categoryList);
+//        spinnerCategory.setAdapter(adapter);
+
+
     }
 
     private void showDateTimePicker() {
