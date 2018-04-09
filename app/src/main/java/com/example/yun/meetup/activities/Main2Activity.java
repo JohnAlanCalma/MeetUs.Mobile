@@ -453,9 +453,10 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            View headerview = navigationView.getHeaderView(0);
 
-            imgUserDrawer.setImageBitmap(bitmap);
+            if (bitmap != null){
+                imgUserDrawer.setImageBitmap(bitmap);
+            }
 
             hideViews();
         }

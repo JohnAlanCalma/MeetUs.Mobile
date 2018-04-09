@@ -321,7 +321,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            circleImageViewProfile.setImageBitmap(bitmap);
+
+            if (bitmap != null){
+                circleImageViewProfile.setImageBitmap(bitmap);
+            }
+
             showLoading(false);
         }
     }
