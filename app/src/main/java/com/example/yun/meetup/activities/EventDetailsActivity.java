@@ -3,6 +3,8 @@ package com.example.yun.meetup.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -11,8 +13,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +31,9 @@ import com.example.yun.meetup.models.UserInfo;
 import com.example.yun.meetup.requests.ParticipateToEventRequest;
 import com.example.yun.meetup.requests.UnsubscribeRequest;
 
+import org.w3c.dom.Text;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,11 +53,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView textViewDetailHostName;
     private TextView textViewDetailSubtitle;
     private TextView textViewDetailDescription;
+    private TextView textViewDetailCategory;
     private ListView listViewSubscribedUsers;
     private String userId;
     private String eventId;
     private Event event;
     private FloatingActionButton fabUnsubscribe;
+    private ImageView imgHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +80,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         textViewDetailHostName = (TextView) findViewById(R.id.txt_detail_event_host);
         textViewDetailSubtitle = (TextView) findViewById(R.id.txt_subtitle);
         textViewDetailDescription = (TextView) findViewById(R.id.txt_description);
+        textViewDetailCategory = (TextView) findViewById(R.id.txt_detail_event_category);
         listViewSubscribedUsers = (ListView) findViewById(R.id.lv_detail_subscribed_users);
+
+        imgHeader = (ImageView) findViewById(R.id.header_image);
 
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("id", null);
@@ -151,8 +163,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(APIResult apiResult) {
 
-            hideViews();
-
             if (apiResult.getResultEntity() == null) {
                 Toast.makeText(EventDetailsActivity.this, "Error retrieving details of event: please try again", Toast.LENGTH_LONG).show();
             } else {
@@ -165,6 +175,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 textViewDetailHostName.setText(event.getUserInfo().getName());
                 textViewDetailSubtitle.setText(event.getSubtitle());
                 textViewDetailDescription.setText(event.getDescription());
+                textViewDetailCategory.setText(event.getCategory());
 
                 List<UserInfo> listSubscribedUsers = new ArrayList<>();
 
@@ -202,6 +213,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 listviewMembersAdapter = new MemberListViewAdapter(isHost, listSubscribedUsers, getApplicationContext(), new MyRemoveMemberCallback());
                 listViewSubscribedUsers.setAdapter(listviewMembersAdapter);
+
+                new DownloadImageTask().execute("https://meet-us-server1.herokuapp.com/api/event/photo/?event_id=" + eventId);
 
             }
         }
@@ -264,6 +277,32 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Toast.makeText(EventDetailsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
             } else {
                 new GetEventTask().execute(eventId);
+            }
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String urldisplay = strings[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            hideViews();
+
+            if (bitmap != null){
+                imgHeader.setImageBitmap(bitmap);
             }
         }
     }
