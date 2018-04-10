@@ -91,6 +91,15 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textViewErrorCreateEventCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:textColor="@color/errorRed"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
             <EditText
                 android:id="@+id/editTextCreateEventDate"
                 android:layout_width="match_parent"
@@ -181,6 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:onClick="handleOnClickEventPhoto"
         android:src="@drawable/ic_photo_camera_white_24dp"/>
 
     <android.support.constraint.ConstraintLayout
