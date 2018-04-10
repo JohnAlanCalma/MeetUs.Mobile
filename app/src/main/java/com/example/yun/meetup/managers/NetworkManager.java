@@ -552,6 +552,22 @@ public class NetworkManager {
         return apiResult;
     }
 
+    public APIResult uploadEventPhoto(File photo, String eventId){
+
+        APIResult apiResult = new APIResult(false, "Error uploading photo: please try again", null);
+
+        try {
+            String response = apiProvider.sendMultipartFormRequest("/event/photo?event_id=" + eventId, photo);
+
+            apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, response);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
     public APIResult updateProfile(UpdateProfileRequest updateProfileRequest){
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
