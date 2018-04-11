@@ -1,6 +1,7 @@
 package com.example.yun.meetup.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,11 +12,14 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,12 +58,15 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView textViewDetailSubtitle;
     private TextView textViewDetailDescription;
     private TextView textViewDetailCategory;
+    private TextView textViewAddComment;
     private ListView listViewSubscribedUsers;
     private String userId;
     private String eventId;
     private Event event;
     private FloatingActionButton fabUnsubscribe;
     private ImageView imgHeader;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         textViewDetailDescription = (TextView) findViewById(R.id.txt_description);
         textViewDetailCategory = (TextView) findViewById(R.id.txt_detail_event_category);
         listViewSubscribedUsers = (ListView) findViewById(R.id.lv_detail_subscribed_users);
+
 
         imgHeader = (ImageView) findViewById(R.id.header_image);
 
@@ -128,6 +136,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         intent.putExtra("event", event);
         startActivityForResult(intent, UPDATE_EVENT_REQUEST);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_gravity="center"
+            android:id="@+id/comment_list_profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/main_background"
+            android:onClick="handleOnClickPhoto"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/white"/>
+
+        <TextView
+            android:id="@+id/item_comment_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Daniel Magalhaes"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/item_comment_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="end"
+            android:text="4/11/2018"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lv_content_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/sample_text"/>
+
+</LinearLayout>
