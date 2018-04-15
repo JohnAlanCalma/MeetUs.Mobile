@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
@@ -280,11 +281,11 @@
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 
-
-                            <ListView
-                                android:id="@+id/lv_detail_comments"
+                            <LinearLayout
+                                android:id="@+id/linear_layout_comments"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"></LinearLayout>
 
                             <EditText
                                 android:id="@+id/edt_comment"
@@ -298,6 +299,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Add"
+                                android:onClick="handleOnClickAddComment"
                                 style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
                         </LinearLayout>
@@ -366,7 +368,6 @@
                 app:fabSize="mini" />
 
         </LinearLayout>
-
 
     </android.support.design.widget.CoordinatorLayout>
 

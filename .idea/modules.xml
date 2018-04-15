@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MeetUs.Mobile.iml" filepath="$PROJECT_DIR$/MeetUs.Mobile.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../meetus1_android/Meetup.iml" filepath="$PROJECT_DIR$/../../meetus1_android/Meetup.iml" />
+      <module fileurl="file://D:\CENTENNIAL_COLLEGE_COURSES\WINTER 2018\meetus1_android\Meetup.iml" filepath="D:\CENTENNIAL_COLLEGE_COURSES\WINTER 2018\meetus1_android\Meetup.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/meetus1_android.iml" filepath="$PROJECT_DIR$/meetus1_android.iml" />
+      <module fileurl="file://D:\CENTENNIAL_COLLEGE_COURSES\WINTER 2018\COMP 313 - PROJECT\MeetUs.Mobile\meetus1_android.iml" filepath="D:\CENTENNIAL_COLLEGE_COURSES\WINTER 2018\COMP 313 - PROJECT\MeetUs.Mobile\meetus1_android.iml" />
     </modules>
   </component>
 </project>

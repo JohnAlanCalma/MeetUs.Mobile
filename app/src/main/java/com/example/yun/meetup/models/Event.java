@@ -27,6 +27,7 @@ public class Event implements Serializable {
     @SerializedName("members")
     private List<String> memberIds = new ArrayList<>();
 
+    private transient List<Comment> comments = new ArrayList<>();
     private transient List<UserInfo> members = new ArrayList<>();
 
     public String get_id() {
@@ -131,5 +132,13 @@ public class Event implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

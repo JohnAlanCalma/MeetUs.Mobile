@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.text.Html;
 
 import com.example.yun.meetup.models.APIResult;
+import com.example.yun.meetup.models.Comment;
 import com.example.yun.meetup.models.Event;
 import com.example.yun.meetup.models.UserInfo;
 import com.example.yun.meetup.providers.ApiProvider;
+import com.example.yun.meetup.requests.AddCommentRequest;
 import com.example.yun.meetup.requests.CreateEventRequest;
 import com.example.yun.meetup.requests.EventListRequest;
 import com.example.yun.meetup.requests.LoginRequest;
@@ -29,8 +31,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class NetworkManager {
 
@@ -583,6 +594,88 @@ public class NetworkManager {
             UserInfo userInfo = gson.fromJson(jsonObject.toString(), UserInfo.class);
 
             apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, userInfo);
+        }
+        catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
+    public APIResult getEventComments(String eventID){
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        APIResult apiResult = new APIResult(false, "Error updating profile: please try again", null);
+
+        try{
+            String response = apiProvider.sendRequest("/event/comment?event_id=" + eventID, "GET", null);
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            if (jsonObject.isNull("err")){
+                Comment[] commentsArray = gson.fromJson(jsonObject.getJSONArray("comment").toString(), Comment[].class);
+
+                List<Comment> comments = new ArrayList<>();
+
+                for (Comment comment : commentsArray){
+                    comments.add(comment);
+                }
+
+                for (Comment comment : comments){
+                    response = apiProvider.sendRequest("/user?id=" + comment.getUser_id(), "GET", null);
+
+                    jsonObject = new JSONObject(response);
+
+                    if (!jsonObject.isNull("data")){
+                        UserInfo userInfo = gson.fromJson(jsonObject.getJSONObject("data").toString(), UserInfo.class);
+
+                        comment.setUserInfo(userInfo);
+                    }
+
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    Date date = dateFormat.parse(comment.getDate());
+                    comment.setCreationDate(date);
+                }
+
+                Collections.sort(comments, new CommentDateComparator());
+
+                apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, comments);
+            }
+
+        }
+        catch (IOException | JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return apiResult;
+    }
+
+    private class CommentDateComparator implements Comparator<Comment>
+    {
+        public int compare(Comment left, Comment right) {
+            return right.getCreationDate().compareTo(left.getCreationDate());
+        }
+    }
+
+    public APIResult addComment(AddCommentRequest addCommentRequest){
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String json = gson .toJson(addCommentRequest);
+
+        APIResult apiResult = new APIResult(false, "Error adding new comment: please try again", null);
+
+        try{
+            String response = apiProvider.sendRequest("/event/comment", "POST", json);
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            if (jsonObject.isNull("err")){
+                Event event = gson.fromJson(jsonObject.toString(), Event.class);
+
+                apiResult = new APIResult(true, APIResult.RESULT_SUCCESS, event);
+            }
         }
         catch (IOException | JSONException e) {
             e.printStackTrace();

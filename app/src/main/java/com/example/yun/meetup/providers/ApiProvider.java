@@ -77,6 +77,9 @@ public class ApiProvider {
             bufferedWriter.close();
         }
 
+        inputStream.close();
+        urlConnection.disconnect();
+
         return result.toString();
     }
 
