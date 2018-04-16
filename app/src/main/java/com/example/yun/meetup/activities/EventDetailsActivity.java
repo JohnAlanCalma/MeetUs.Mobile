@@ -36,8 +36,11 @@ import com.example.yun.meetup.requests.AddCommentRequest;
 import com.example.yun.meetup.requests.ParticipateToEventRequest;
 import com.example.yun.meetup.requests.UnsubscribeRequest;
 
+import org.joda.time.DateTime;
+
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -174,14 +177,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if (!editTextComment.getText().toString().isEmpty() && editTextComment.getText().toString() != ""){
 
-            editTextComment.setText("");
-
             constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
 
             AddCommentRequest addCommentRequest = new AddCommentRequest();
             addCommentRequest.setEvent_id(eventId);
             addCommentRequest.setUser_id(userId);
             addCommentRequest.setText(editTextComment.getText().toString());
+
+            editTextComment.setText("");
 
             new AddCommentTask().execute(addCommentRequest);
         }
@@ -387,7 +390,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                     String dateText = "more than 1 year ago";
 
-                    long msDifference = Math.abs(new Date().getTime() - comment.getCreationDate().getTime());
+                    DateTime currentDate = DateTime.now();
+
+                    long msDifference = Math.abs(currentDate.getMillis() - comment.getCreationDate().getMillis());
 
                     if (msDifference < 60000) {
                         dateText = "less than a minute ago";

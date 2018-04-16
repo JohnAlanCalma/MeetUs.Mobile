@@ -15,6 +15,8 @@ import com.example.yun.meetup.R;
 import com.example.yun.meetup.models.APIResult;
 import com.example.yun.meetup.models.Comment;
 
+import org.joda.time.DateTime;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Date;
@@ -81,7 +83,9 @@ public class CommentListViewAdapter extends BaseAdapter {
 
         String dateText = "more than 1 year ago";
 
-        long msDifference = Math.abs(new Date().getTime() - mComments.get(position).getCreationDate().getTime());
+
+
+        long msDifference = Math.abs(DateTime.now().getMillis() - mComments.get(position).getCreationDate().getMillis());
 
         if (msDifference < 60000) {
             dateText = "less than a minute ago";

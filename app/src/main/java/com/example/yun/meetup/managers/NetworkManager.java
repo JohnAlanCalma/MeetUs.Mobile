@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -634,8 +636,8 @@ public class NetworkManager {
                         comment.setUserInfo(userInfo);
                     }
 
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                    Date date = dateFormat.parse(comment.getDate());
+//                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    DateTime date = DateTime.parse(comment.getDate(), DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
                     comment.setCreationDate(date);
                 }
 
@@ -645,7 +647,7 @@ public class NetworkManager {
             }
 
         }
-        catch (IOException | JSONException | ParseException e) {
+        catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 

@@ -1,5 +1,7 @@
 package com.example.yun.meetup.models;
 
+import org.joda.time.DateTime;
+
 import java.util.Date;
 
 public class Comment {
@@ -8,7 +10,7 @@ public class Comment {
     private String event_id;
     private String comment;
     private String date;
-    private transient Date creationDate;
+    private transient DateTime creationDate;
     private transient UserInfo userInfo;
 
     public String getUser_id() {
@@ -43,11 +45,11 @@ public class Comment {
         this.date = date;
     }
 
-    public Date getCreationDate() {
+    public DateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
