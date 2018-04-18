@@ -249,6 +249,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if (isMember){
                     fabParticipate.setVisibility(View.GONE);
                     fabUnsubscribe.setVisibility(View.VISIBLE);
+                    editTextComment.setVisibility(View.VISIBLE);
+                    buttonAddComment.setVisibility(View.VISIBLE);
                 }
                 else{
                     fabParticipate.setVisibility(View.VISIBLE);
@@ -261,6 +263,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 if (isHost) {
                     fabParticipate.setVisibility(View.GONE);
+                    editTextComment.setVisibility(View.VISIBLE);
+                    buttonAddComment.setVisibility(View.VISIBLE);
                 } else {
                     fabEdit.setVisibility(View.GONE);
                     fabDelete.setVisibility(View.GONE);
