@@ -121,19 +121,34 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+        showLoading();
         new GetEventTask().execute(eventId);
         super.onResume();
     }
 
-    public void hideViews() {
+    public void hideLoading() {
         constraintLayoutDetailsLoading.setVisibility(View.GONE);
+        fabDelete.setClickable(true);
+        fabEdit.setClickable(true);
+        fabParticipate.setClickable(true);
+        fabUnsubscribe.setClickable(true);
+        editTextComment.setClickable(true);
+        buttonAddComment.setClickable(true);
     }
 
+    public void showLoading() {
+        constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+        fabDelete.setClickable(false);
+        fabEdit.setClickable(false);
+        fabParticipate.setClickable(false);
+        fabUnsubscribe.setClickable(false);
+        editTextComment.setClickable(false);
+        buttonAddComment.setClickable(false);
+    }
     // TODO: Implement the unsubscribe.
     public void handleOnClickParticipate(View view) {
 
-        constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+        showLoading();
 
         ParticipateToEventRequest participateToEventRequest = new ParticipateToEventRequest();
         participateToEventRequest.setEvent_id(eventId);
@@ -154,7 +169,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UPDATE_EVENT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+                showLoading();
                 new GetEventTask().execute(eventId);
             }
         }
@@ -165,7 +180,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     public void handleOnClickUnsubscribe(View view) {
-        constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+        showLoading();
 
         UnsubscribeRequest unsubscribeRequest = new UnsubscribeRequest();
         unsubscribeRequest.setEvent_id(eventId);
@@ -177,7 +192,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if (!editTextComment.getText().toString().isEmpty() && editTextComment.getText().toString() != ""){
 
-            constraintLayoutDetailsLoading.setVisibility(View.VISIBLE);
+            showLoading();
 
             AddCommentRequest addCommentRequest = new AddCommentRequest();
             addCommentRequest.setEvent_id(eventId);
@@ -277,7 +292,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         protected void onPostExecute(APIResult apiResult) {
 
             if (!apiResult.isResultSuccess()) {
-                hideViews();
+                hideLoading();
                 Toast.makeText(EventDetailsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
             } else {
                 new GetEventTask().execute(eventId);
@@ -318,7 +333,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(APIResult apiResult) {
             if (!apiResult.isResultSuccess()) {
-                hideViews();
+                hideLoading();
                 Toast.makeText(EventDetailsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_LONG).show();
             } else {
                 new GetEventTask().execute(eventId);
@@ -344,7 +359,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            hideViews();
+            hideLoading();
 
             if (bitmap != null){
                 imgHeader.setImageBitmap(bitmap);
@@ -498,7 +513,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         protected void onPostExecute(APIResult apiResult) {
 
             if (!apiResult.isResultSuccess()){
-                hideViews();
+                hideLoading();
                 Toast.makeText(EventDetailsActivity.this, apiResult.getResultMessage(), Toast.LENGTH_SHORT).show();
             }
             else{

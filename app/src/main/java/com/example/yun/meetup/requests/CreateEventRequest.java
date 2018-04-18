@@ -14,6 +14,7 @@ public class CreateEventRequest {
     private float longitude;
     private String date;
     private String address;
+    private String category;
 
     public String getHost_id() {
         return host_id;
@@ -77,5 +78,13 @@ public class CreateEventRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

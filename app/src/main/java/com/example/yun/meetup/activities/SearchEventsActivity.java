@@ -136,15 +136,15 @@ public class SearchEventsActivity extends AppCompatActivity  implements OnMapRea
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (currentLocation != null){
-//            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                    .findFragmentById(R.id.map);
-//            mapFragment.getMapAsync(this);
-//        }
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentLocation != null){
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
+    }
 
     public void hideViews(){
         constraintLayoutMapLoading.setVisibility(View.GONE);

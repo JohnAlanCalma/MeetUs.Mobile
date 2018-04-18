@@ -295,7 +295,7 @@ public class NetworkManager {
 
                 Event[] arrayEvent = gson.fromJson(responseJSON.getJSONArray("data").toString(), Event[].class);
 
-                if (arrayEvent.length > 0){
+                if (arrayEvent.length >= 0){
 
                     List<Event> listEvents = new ArrayList<>();
 

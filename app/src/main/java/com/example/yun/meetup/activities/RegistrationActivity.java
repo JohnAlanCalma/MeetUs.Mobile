@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,6 +42,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextView textViewRegistrationErrorConfirmPassword;
     private TextView textViewRegistrationError;
 
+    private Button buttonRegister;
+    private Button buttonSignIn;
+
 
 
     @Override
@@ -63,7 +67,10 @@ public class RegistrationActivity extends AppCompatActivity {
         textViewRegistrationErrorPassword = (TextView) findViewById(R.id.textViewRegistrationErrorPassword);
         textViewRegistrationErrorConfirmPassword = (TextView) findViewById(R.id.textViewRegistrationErrorConfirmPassword);
 
-        hideViews();
+        buttonRegister = findViewById(R.id.buttonRegister);
+        buttonSignIn = findViewById(R.id.buttonSignIn);
+
+        hideLoading();
     }
 
     public void handleOnClickSignin(View view) {
@@ -74,7 +81,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     public void handleOnClickRegister(View view) {
-        hideViews();
+        hideLoading();
 
         boolean error = false;
 
@@ -111,20 +118,37 @@ public class RegistrationActivity extends AppCompatActivity {
             registrationRequest.setName(editTextRegistrationFirstName.getText().toString() + " " + editTextRegistrationLastName.getText().toString());
             registrationRequest.setPassword(editTextRegistrationPassword.getText().toString());
 
-            constraintLayoutRegistrationLoading.setVisibility(View.VISIBLE);
+            showLoading();
 
             new RegistrationTask().execute(registrationRequest);
         }
     }
 
-    public void hideViews(){
+    public void hideLoading(){
         textViewRegistrationErrorEmail.setVisibility(View.GONE);
         textViewRegistrationErrorFirstName.setVisibility(View.GONE);
         textViewRegistrationErrorLastName.setVisibility(View.GONE);
         textViewRegistrationErrorPassword.setVisibility(View.GONE);
         textViewRegistrationErrorConfirmPassword.setVisibility(View.GONE);
-
         constraintLayoutRegistrationLoading.setVisibility(View.GONE);
+        editTextRegistrationEmail.setClickable(true);
+        editTextRegistrationFirstName.setClickable(true);
+        editTextRegistrationLastName.setClickable(true);
+        editTextRegistrationPassword.setClickable(true);
+        editTextRegistrationConfirmPassword.setClickable(true);
+        buttonRegister.setClickable(true);
+        buttonSignIn.setClickable(true);
+    }
+
+    public void showLoading(){
+        constraintLayoutRegistrationLoading.setVisibility(View.VISIBLE);
+        editTextRegistrationEmail.setClickable(false);
+        editTextRegistrationFirstName.setClickable(false);
+        editTextRegistrationLastName.setClickable(false);
+        editTextRegistrationPassword.setClickable(false);
+        editTextRegistrationConfirmPassword.setClickable(false);
+        buttonRegister.setClickable(false);
+        buttonSignIn.setClickable(false);
     }
 
     private class RegistrationTask extends AsyncTask<RegistrationRequest, Void, APIResult>{
@@ -137,7 +161,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(APIResult apiResult) {
-            hideViews();
+            hideLoading();
 
             if (!apiResult.isResultSuccess()){
                 textViewRegistrationError.setText(apiResult.getResultMessage());

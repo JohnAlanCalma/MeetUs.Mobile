@@ -22,7 +22,7 @@ public class Event implements Serializable {
     private float longitude = 0;
     private String address = "";
     private String date = "";
-    private transient String category = "";
+    private String category = "";
 
     @SerializedName("members")
     private List<String> memberIds = new ArrayList<>();

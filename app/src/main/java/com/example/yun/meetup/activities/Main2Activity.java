@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SeekBar;
@@ -54,6 +55,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -90,6 +92,9 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
     private CircleImageView imgUserDrawer;
     private NavigationView navigationView;
+
+    private Spinner spinnerCategory;
+    private List<String> mCategoryList;
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -144,16 +149,16 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
         setTitle("MeetUs");
 
 
-        constraintLayoutMapLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutMapLoading);
+        constraintLayoutMapLoading = findViewById(R.id.constraintLayoutMapLoading);
         searchView =  findViewById(R.id.search_view);
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         View headerview = navigationView.getHeaderView(0);
 
-        imgUserDrawer = (CircleImageView) headerview.findViewById(R.id.img_user_drawer);
+        imgUserDrawer = headerview.findViewById(R.id.img_user_drawer);
         imgUserDrawer.setImageDrawable(getResources().getDrawable(R.drawable.main_background));
 
-        fab = (FloatingActionButton) findViewById(R.id.fab_add_event_main_activity);
+        fab = findViewById(R.id.fab_add_event_main_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,7 +169,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
         showLoading();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -231,7 +236,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -286,7 +291,22 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
         dialog = new Dialog(Main2Activity.this);
         dialog.setContentView(R.layout.dialog_filter);
         dialog.setTitle("Hello");
-        Spinner spinner = dialog.findViewById(R.id.spinner_category);
+        spinnerCategory = dialog.findViewById(R.id.spinner_category);
+
+        String[] categoryArray = getResources().getStringArray(R.array.category_array);
+        mCategoryList = Arrays.asList(categoryArray);
+
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCategory = mCategoryList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         SeekBar seekBar = dialog.findViewById(R.id.seek_bar_distance);
         final TextView textViewProgress = dialog.findViewById(R.id.text_distance);
         dialog.show();
@@ -468,6 +488,9 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
         super.onResume();
 
         if (mMap != null){
+
+            mMap.clear();
+
             constraintLayoutMapLoading.setVisibility(View.VISIBLE);
 
             SearchEventsRequest searchEventsRequest = new SearchEventsRequest();
@@ -485,6 +508,7 @@ public class Main2Activity extends AppCompatActivity implements NavigationView.O
                 mMap.setMyLocationEnabled(true);
             }
 
+            showLoading();
             new SearchEventsTask().execute(searchEventsRequest);
         }
 

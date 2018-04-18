@@ -34,7 +34,10 @@
             android:id="@+id/spinner_category"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            android:spinnerMode="dialog"
+            android:popupTheme="@style/AlertDialog.AppCompat"
+            android:entries="@array/category_array"/>
 
     </LinearLayout>
 

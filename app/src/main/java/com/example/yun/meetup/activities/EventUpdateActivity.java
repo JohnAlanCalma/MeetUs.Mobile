@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,8 @@ public class EventUpdateActivity extends AppCompatActivity {
 
     private Spinner spinnerCategory;
 
+    private FloatingActionButton fabPhoto;
+
     private File mFile;
     private String mCategory;
     private List<String> mCategoryList;
@@ -65,6 +68,8 @@ public class EventUpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_update);
 
         constraintLayoutLoading = findViewById(R.id.constraintLayoutLoading);
+
+        fabPhoto = findViewById(R.id.fab_update_photo);
 
         event = (Event) getIntent().getExtras().get("event");
 
@@ -110,6 +115,18 @@ public class EventUpdateActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        if (event.getCategory() != "" && !event.getCategory().isEmpty()){
+            int position = 0;
+
+            for (int i = 0; i < categoryArray.length; i++){
+                if (event.getCategory().equals(categoryArray[i])){
+                    position = i;
+                }
+            }
+
+            spinnerCategory.setSelection(position);
+        }
     }
 
     private void showDateTimePicker() {
@@ -180,6 +197,7 @@ public class EventUpdateActivity extends AppCompatActivity {
             updateEventRequest.setDescription(edt_update_event_description.getText().toString());
             updateEventRequest.setDate(editTextUpdateEventDate.getText().toString());
             updateEventRequest.setAddress(edt_update_event_address.getText().toString());
+            updateEventRequest.setCategory(mCategory);
             new ValidateAddressTask().execute(updateEventRequest);
         }
 
@@ -256,7 +274,16 @@ public class EventUpdateActivity extends AppCompatActivity {
         protected void onPostExecute(APIResult apiResult) {
 
             if (apiResult.isResultSuccess()) {
-                new UploadPhotoTask().execute(mFile);
+
+                if (mFile != null){
+                    new UploadPhotoTask().execute(mFile);
+                }
+                else{
+                    hideViews();
+                    Intent returnIntent = getIntent();
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    EventUpdateActivity.this.finish();
+                }
             } else {
                 txt_error_update_event.setVisibility(View.VISIBLE);
                 txt_error_update_event.setText(apiResult != null ? apiResult.getResultMessage() : "Please contact admin staff!");

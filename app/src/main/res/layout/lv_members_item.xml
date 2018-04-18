@@ -19,24 +19,7 @@
         android:layout_height="wrap_content"
         android:textSize="16dp"
         android:text="Daniel Magalhaes"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_margin="12dp"/>
-
-    <!--<TextView-->
-        <!--android:id="@+id/txt_member_name"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:textSize="16dp"-->
-        <!--android:text="Daniel Magalhaes" />-->
-
-    <!--<ImageButton-->
-        <!--android:id="@+id/img_btn_message_members"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignTop="@+id/txt_member_name"-->
-        <!--android:background="@drawable/rounded_button"-->
-        <!--app:srcCompat="@drawable/ic_mail_outline_white_24dp" />-->
 </LinearLayout>

@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -62,6 +64,10 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextView textViewErrorCreateEvent;
     private Spinner spinnerCategory;
 
+    private FloatingActionButton fabPhoto;
+
+    private Button buttonCreate;
+
     private static final int REQUEST_PERMISSIONS = 2;
     private static final String[] PERMISSIONS_TO_REQUEST = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int PICKIMAGE_REQUESTCODE = 1;
@@ -78,6 +84,10 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        fabPhoto = findViewById(R.id.fab_create_photo);
+
+        buttonCreate = (Button) findViewById(R.id.buttonCreateEvent);
 
         constraintLayoutLoading = (ConstraintLayout) findViewById(R.id.constraintLayoutLoading);
 
@@ -154,7 +164,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void handleOnClickCreateEvent(View view) {
-        hideViews();
+        hideLoading();
 
         boolean error = false;
 
@@ -194,21 +204,48 @@ public class CreateEventActivity extends AppCompatActivity {
             createEventRequest.setDate(editTextCreateEventDate.getText().toString());
             createEventRequest.setAddress(editTextCreateEventAddress.getText().toString());
             createEventRequest.setDescription(editTextCreateEventDescription.getText().toString());
+            createEventRequest.setCategory(mCategory);
 
-            constraintLayoutLoading.setVisibility(View.VISIBLE);
+            showLoading();
 
             new ValidateAddressTask().execute(createEventRequest);
         }
 
     }
 
-    public void hideViews() {
+    public void hideLoading() {
         textViewErrorCreateEventAddress.setVisibility(View.GONE);
         textViewErrorCreateEventDate.setVisibility(View.GONE);
         textViewErrorCreateEventTitle.setVisibility(View.GONE);
         constraintLayoutLoading.setVisibility(View.GONE);
         textViewErrorCreateEvent.setVisibility(View.GONE);
         textViewErrorCreateEventCategory.setVisibility(View.GONE);
+        editTextCreateEventTitle.setClickable(true);
+        editTextCreateEventSubtitle.setClickable(true);
+        editTextCreateEventDescription.setClickable(true);
+        editTextCreateEventAddress.setClickable(true);
+        editTextCreateEventDate.setClickable(true);
+        spinnerCategory.setClickable(true);
+        fabPhoto.setClickable(true);
+        buttonCreate.setClickable(true);
+    }
+
+    public void showLoading() {
+        textViewErrorCreateEventAddress.setVisibility(View.GONE);
+        textViewErrorCreateEventDate.setVisibility(View.GONE);
+        textViewErrorCreateEventTitle.setVisibility(View.GONE);
+        constraintLayoutLoading.setVisibility(View.GONE);
+        textViewErrorCreateEvent.setVisibility(View.GONE);
+        textViewErrorCreateEventCategory.setVisibility(View.GONE);
+        editTextCreateEventTitle.setClickable(false);
+        editTextCreateEventSubtitle.setClickable(false);
+        editTextCreateEventDescription.setClickable(false);
+        editTextCreateEventAddress.setClickable(false);
+        editTextCreateEventDate.setClickable(false);
+        spinnerCategory.setClickable(false);
+        fabPhoto.setClickable(false);
+        buttonCreate.setClickable(false);
+
     }
 
     public void handleOnClickEventPhoto(View view) {
@@ -265,7 +302,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 new CreateEventTask().execute((CreateEventRequest)result.getResultEntity());
             }
             else {
-                hideViews();
+                hideLoading();
                 textViewErrorCreateEventAddress.setText(result != null ? result.getResultMessage() : "Please contact admin staff!");
                 textViewErrorCreateEventAddress.setVisibility(View.VISIBLE);
             }
@@ -284,7 +321,7 @@ public class CreateEventActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(APIResult result) {
 
-            hideViews();
+            hideLoading();
 
             if (result.isResultSuccess()) {
                 Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
@@ -315,7 +352,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 new DeleteEventTask().execute(mEvent.get_id());
             }
             else{
-                hideViews();
+                hideLoading();
                 CreateEventActivity.this.finish();
             }
         }
@@ -336,7 +373,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 new DeleteEventTask().execute(mEvent.get_id());
             }
             else{
-                hideViews();
+                hideLoading();
             }
         }
     }

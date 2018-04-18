@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -33,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView textViewLoginErrorEmail;
     private TextView textViewLoginErrorPassword;
 
+    private Button buttonLogin;
+    private Button buttonCreateAccount;
+
     private ScrollView scrollViewLogin;
 
 
@@ -50,6 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         textViewLoginError = (TextView) findViewById(R.id.textViewLoginError);
         textViewLoginErrorEmail = (TextView) findViewById(R.id.textViewLoginErrorEmail);
         textViewLoginErrorPassword = (TextView) findViewById(R.id.textViewloginErrorPassword);
+
+        buttonLogin = findViewById(R.id.buttonLogin);
+        buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
 
         scrollViewLogin = (ScrollView) findViewById(R.id.scrollViewLogin);
 
@@ -72,14 +79,14 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         else{
-            hideViews();
+            hideLoading();
         }
 
 
     }
 
     public void handleOnClickLogin(View view) {
-        hideViews();
+        hideLoading();
 
         boolean error = false;
 
@@ -97,8 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             loginRequest.setEmail(editTextLoginEmail.getText().toString());
             loginRequest.setPassword(editTextLoginPassword.getText().toString());
 
-            constraintLayoutLoginLoading.setVisibility(View.VISIBLE);
-            scrollViewLogin.setClickable(false);
+            showLoading();
 
             new LoginTask().execute(loginRequest);
         }
@@ -111,12 +117,25 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void hideViews(){
+    public void hideLoading(){
 
         textViewLoginErrorEmail.setVisibility(View.GONE);
         textViewLoginErrorPassword.setVisibility(View.GONE);
         constraintLayoutLoginLoading.setVisibility(View.GONE);
-        scrollViewLogin.setClickable(true);
+        editTextLoginEmail.setClickable(true);
+        editTextLoginPassword.setClickable(true);
+        buttonLogin.setClickable(true);
+        buttonCreateAccount.setClickable(true);
+    }
+
+    public void showLoading(){
+
+        constraintLayoutLoginLoading.setVisibility(View.VISIBLE);
+        editTextLoginEmail.setClickable(false);
+        editTextLoginPassword.setClickable(false);
+        scrollViewLogin.setClickable(false);
+        buttonLogin.setClickable(false);
+        buttonCreateAccount.setClickable(false);
     }
 
     private class LoginTask extends AsyncTask<LoginRequest, Void, APIResult>{
@@ -131,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(APIResult apiResult) {
 
-            hideViews();
+            hideLoading();
 
             if (!apiResult.isResultSuccess()){
                 textViewLoginError.setText(apiResult.getResultMessage());
